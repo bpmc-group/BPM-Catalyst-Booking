@@ -7,10 +7,17 @@ class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   Future<void> _logout(WidgetRef ref) async {
+    print('🔍 Logout button pressed');
+    print('🔍 Current user: ${ref.read(currentUserProvider)?.name}');
+    print('🔍 Is doctor: ${ref.read(isDoctorProvider)}');
+
     try {
+      print('🔍 Calling sign out...');
       await ref.read(authProvider.notifier).signOut();
+      print('🔍 Sign out completed successfully');
       // AuthWrapper will handle navigation automatically
     } catch (e) {
+      print('🔍 Sign out error: $e');
       // Error handling will be done by AuthWrapper
     }
   }
@@ -36,55 +43,63 @@ class HomeScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        isDoctor
-                            ? 'Welcome back, Dr. ${user.name}!'
-                            : 'Welcome back, ${user.name}!',
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2D5A87),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isDoctor
+                              ? 'Welcome back,\nDr. ${user.name}!'
+                              : 'Welcome back,\n${user.name}!',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2D5A87),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color:
-                                  isDoctor
-                                      ? const Color(0xFF00BCD4)
-                                      : const Color(0xFF2196F3),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              isDoctor ? 'Doctor' : 'Patient',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    isDoctor
+                                        ? const Color(0xFF00BCD4)
+                                        : const Color(0xFF2196F3),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                isDoctor ? 'Doctor' : 'Patient',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            user.email,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                user.email,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[600],
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
+                  const SizedBox(width: 16),
                   IconButton(
                     onPressed: () => _logout(ref),
                     icon: const Icon(

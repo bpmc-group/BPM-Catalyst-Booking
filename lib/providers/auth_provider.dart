@@ -149,12 +149,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> signOut() async {
+    print('🔍 AuthProvider: Starting sign out...');
+    print(
+      '🔍 AuthProvider: Current user before sign out: ${state.user?.name} (${state.user?.role})',
+    );
+
     state = state.copyWith(isLoading: true);
 
     try {
+      print('🔍 AuthProvider: Calling Firebase signOut...');
       await _firebaseAuth.signOut();
+      print('🔍 AuthProvider: Firebase signOut completed');
       state = state.copyWith(user: null, isLoading: false);
+      print('🔍 AuthProvider: State updated - user should be null');
     } catch (e) {
+      print('🔍 AuthProvider: Sign out failed with error: $e');
       state = state.copyWith(isLoading: false, error: 'Sign out failed.');
       rethrow;
     }
