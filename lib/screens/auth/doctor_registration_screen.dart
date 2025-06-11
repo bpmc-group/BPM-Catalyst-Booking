@@ -49,6 +49,7 @@ class _DoctorRegistrationScreenState
     setState(() => _isLoading = true);
 
     try {
+      // Step 1: Create Firebase Auth account with basic user info
       await ref
           .read(authProvider.notifier)
           .createUserWithEmailAndPassword(
@@ -58,7 +59,29 @@ class _DoctorRegistrationScreenState
             UserRole.doctor,
           );
 
+      // Step 2: 🚀 WEEK 2 FIX - Save professional doctor information to Firestore
+      await ref
+          .read(authProvider.notifier)
+          .createDoctorProfile(
+            specialization: _specializationController.text.trim(),
+            licenseNumber: _licenseController.text.trim(),
+            experienceYears: int.parse(_experienceController.text.trim()),
+            education:
+                _hospitalController.text
+                    .trim(), // Using hospital field as education/workplace
+            bio: _bioController.text.trim(),
+            clinicAddress: _hospitalController.text.trim(),
+          );
+
       if (mounted) {
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Doctor account created successfully!'),
+            backgroundColor: Color(0xFF00BCD4),
+          ),
+        );
+
         Navigator.pushReplacementNamed(context, '/home');
       }
     } catch (e) {
@@ -66,7 +89,8 @@ class _DoctorRegistrationScreenState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              ref.read(authProvider).error ?? 'Registration failed',
+              ref.read(authProvider).error ??
+                  'Registration failed: ${e.toString()}',
             ),
             backgroundColor: Colors.red,
           ),

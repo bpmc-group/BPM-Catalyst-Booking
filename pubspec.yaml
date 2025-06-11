@@ -38,7 +38,7 @@ dependencies:
   # Firebase packages
   firebase_core: ^3.13.1
   firebase_auth: ^5.5.4
-  # cloud_firestore: ^5.6.8  # Temporarily disabled due to gRPC issues
+  cloud_firestore: ^5.6.8 # Re-enabled for Week 2 - Firestore integration
   # firebase_messaging: ^15.2.6  # Temporarily disabled due to gRPC issues
 
   flutter_riverpod: ^2.6.1

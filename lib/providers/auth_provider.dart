@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import '../models/user.dart';
+import '../services/database_service.dart';
 
 // Auth State
 class AuthState {
@@ -27,24 +28,60 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   final firebase_auth.FirebaseAuth _firebaseAuth =
       firebase_auth.FirebaseAuth.instance;
+  final DatabaseService _databaseService = DatabaseService();
 
   void _init() {
     // Listen to Firebase auth state changes
-    _firebaseAuth.authStateChanges().listen((firebase_auth.User? firebaseUser) {
+    _firebaseAuth.authStateChanges().listen((
+      firebase_auth.User? firebaseUser,
+    ) async {
       if (firebaseUser != null) {
-        // ⚠️ TEMPORARY LIMITATION: Role defaults to patient on re-login
-        // TODO: Load user profile from Firestore with role information
-        // This will be fixed when we implement Firestore integration in Week 2
-        final user = User(
-          id: firebaseUser.uid,
-          email: firebaseUser.email ?? '',
-          name: firebaseUser.displayName ?? 'User',
-          role:
-              UserRole.patient, // Will be properly loaded from Firestore later
-          createdAt: DateTime.now(),
+        print(
+          '🔍 AuthProvider: Firebase user authenticated: ${firebaseUser.email}',
         );
-        state = state.copyWith(user: user, isLoading: false);
+
+        try {
+          // 🚀 WEEK 2 FIX: Load user profile from Firestore
+          User? userProfile = await _databaseService.getUserProfile(
+            firebaseUser.uid,
+          );
+
+          if (userProfile != null) {
+            // User exists in Firestore - use the stored profile with correct role
+            print(
+              '✅ AuthProvider: User profile loaded from Firestore with role: ${userProfile.role}',
+            );
+            state = state.copyWith(user: userProfile, isLoading: false);
+          } else {
+            // New user - create a basic profile (role will be set during registration)
+            print(
+              '⚠️ AuthProvider: No Firestore profile found, creating basic user profile',
+            );
+            final user = User(
+              id: firebaseUser.uid,
+              email: firebaseUser.email ?? '',
+              name: firebaseUser.displayName ?? 'User',
+              role: UserRole.patient, // Default role for fallback
+              createdAt: DateTime.now(),
+            );
+
+            // Don't store to Firestore yet - this will be done during registration
+            state = state.copyWith(user: user, isLoading: false);
+          }
+        } catch (e) {
+          print('❌ AuthProvider: Error loading user profile: $e');
+          // Fallback to basic user if Firestore fails
+          final user = User(
+            id: firebaseUser.uid,
+            email: firebaseUser.email ?? '',
+            name: firebaseUser.displayName ?? 'User',
+            role: UserRole.patient,
+            createdAt: DateTime.now(),
+          );
+          state = state.copyWith(user: user, isLoading: false);
+        }
       } else {
+        print('🔍 AuthProvider: User signed out');
         state = state.copyWith(user: null, isLoading: false);
       }
     });
@@ -54,11 +91,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
+      print('🔍 AuthProvider: Attempting sign in for: $email');
       await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      // User will be set through the auth state listener
+      // User will be set through the auth state listener with Firestore data
     } on firebase_auth.FirebaseAuthException catch (e) {
       String errorMessage = 'Login failed';
 
@@ -99,17 +137,19 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
+      print(
+        '🔍 AuthProvider: Creating user account for: $email with role: $role',
+      );
       final credential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       if (credential.user != null) {
-        // Update display name
+        // Update display name in Firebase Auth
         await credential.user!.updateDisplayName(name);
 
-        // TODO: Create user document in Firestore with role information
-        // For now, create local user object
+        // 🚀 WEEK 2 ENHANCEMENT: Create user profile in Firestore
         final user = User(
           id: credential.user!.uid,
           email: email,
@@ -117,6 +157,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
           role: role,
           createdAt: DateTime.now(),
         );
+
+        // Store user profile in Firestore
+        await _databaseService.createUserProfile(user);
+        print('✅ AuthProvider: User profile created in Firestore');
 
         state = state.copyWith(user: user, isLoading: false);
       }
@@ -140,6 +184,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       state = state.copyWith(isLoading: false, error: errorMessage);
       rethrow;
     } catch (e) {
+      print('❌ AuthProvider: Registration error: $e');
       state = state.copyWith(
         isLoading: false,
         error: 'An unexpected error occurred.',
@@ -148,22 +193,49 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> signOut() async {
-    print('🔍 AuthProvider: Starting sign out...');
-    print(
-      '🔍 AuthProvider: Current user before sign out: ${state.user?.name} (${state.user?.role})',
-    );
+  /// 🚀 WEEK 2 NEW METHOD: Create doctor profile with professional information
+  Future<void> createDoctorProfile({
+    required String specialization,
+    required String licenseNumber,
+    required int experienceYears,
+    required String education,
+    required String bio,
+    String? phoneNumber,
+    String? clinicAddress,
+  }) async {
+    if (state.user == null) {
+      throw Exception('No authenticated user found');
+    }
 
+    try {
+      print(
+        '🔍 AuthProvider: Creating doctor profile for: ${state.user!.name}',
+      );
+      await _databaseService.createDoctorProfile(
+        userId: state.user!.id,
+        specialization: specialization,
+        licenseNumber: licenseNumber,
+        experienceYears: experienceYears,
+        education: education,
+        bio: bio,
+        phoneNumber: phoneNumber,
+        clinicAddress: clinicAddress,
+      );
+      print('✅ AuthProvider: Doctor profile created successfully');
+    } catch (e) {
+      print('❌ AuthProvider: Failed to create doctor profile: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> signOut() async {
     state = state.copyWith(isLoading: true);
 
     try {
-      print('🔍 AuthProvider: Calling Firebase signOut...');
       await _firebaseAuth.signOut();
-      print('🔍 AuthProvider: Firebase signOut completed');
       state = state.copyWith(user: null, isLoading: false);
-      print('🔍 AuthProvider: State updated - user should be null');
     } catch (e) {
-      print('🔍 AuthProvider: Sign out failed with error: $e');
+      print('❌ AuthProvider: Sign out failed with error: $e');
       state = state.copyWith(isLoading: false, error: 'Sign out failed.');
       rethrow;
     }
@@ -198,4 +270,9 @@ final isDoctorProvider = Provider<bool>((ref) {
 
 final isPatientProvider = Provider<bool>((ref) {
   return ref.watch(authProvider).user?.role == UserRole.patient;
+});
+
+// 🚀 WEEK 2 NEW PROVIDER: Database service provider
+final databaseServiceProvider = Provider<DatabaseService>((ref) {
+  return DatabaseService();
 });

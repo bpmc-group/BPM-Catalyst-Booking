@@ -7,17 +7,10 @@ class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   Future<void> _logout(WidgetRef ref) async {
-    print('🔍 Logout button pressed');
-    print('🔍 Current user: ${ref.read(currentUserProvider)?.name}');
-    print('🔍 Is doctor: ${ref.read(isDoctorProvider)}');
-
     try {
-      print('🔍 Calling sign out...');
       await ref.read(authProvider.notifier).signOut();
-      print('🔍 Sign out completed successfully');
       // AuthWrapper will handle navigation automatically
     } catch (e) {
-      print('🔍 Sign out error: $e');
       // Error handling will be done by AuthWrapper
     }
   }
