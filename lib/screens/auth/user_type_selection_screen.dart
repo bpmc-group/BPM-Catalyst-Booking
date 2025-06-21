@@ -5,7 +5,7 @@ import 'register_screen.dart';
 import 'doctor_registration_screen.dart';
 
 class UserTypeSelectionScreen extends ConsumerWidget {
-  const UserTypeSelectionScreen({Key? key}) : super(key: key);
+  const UserTypeSelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -138,13 +138,13 @@ class UserTypeCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const UserTypeCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.subtitle,
     required this.icon,
     required this.gradient,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
