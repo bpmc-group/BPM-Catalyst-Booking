@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/user.dart';
-import '../../models/doctor_profile.dart';
+//import '../../models/doctor_profile.dart';
 import '../../providers/auth_provider.dart';
 
-class DoctorRegistrationScreen extends ConsumerStatefulWidget {
-  const DoctorRegistrationScreen({super.key});
+class RegisterDoctorScreen extends ConsumerStatefulWidget {
+  const RegisterDoctorScreen({super.key});
 
   @override
-  ConsumerState<DoctorRegistrationScreen> createState() =>
+  ConsumerState<RegisterDoctorScreen> createState() =>
       _DoctorRegistrationScreenState();
 }
 
 class _DoctorRegistrationScreenState
-    extends ConsumerState<DoctorRegistrationScreen> {
+    extends ConsumerState<RegisterDoctorScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();

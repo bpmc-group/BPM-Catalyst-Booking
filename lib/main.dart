@@ -3,11 +3,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_options.dart';
 import 'screens/auth/login_screen.dart';
-import 'screens/auth/register_screen.dart';
+import 'screens/auth/register_patient_screen.dart';
 import 'screens/auth/user_type_selection_screen.dart';
-import 'screens/auth/doctor_registration_screen.dart';
+import 'screens/auth/register_doctor_screen.dart';
 import 'screens/home/home_screen.dart';
-import 'models/user.dart';
+//import 'models/user.dart';
 import 'providers/auth_provider.dart';
 
 void main() async {
@@ -76,9 +76,9 @@ class PatientBookingApp extends ConsumerWidget {
       routes: {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const UserTypeSelectionScreen(),
-        '/register-patient':
-            (context) => const RegisterScreen(userType: UserRole.patient),
-        '/register-doctor': (context) => const DoctorRegistrationScreen(),
+        '/register-patient': (context) => const RegisterPatientScreen(),
+        //(context) => const RegisterPatientScreen(userType: UserRole.patient),
+        '/register-doctor': (context) => const RegisterDoctorScreen(),
         '/home': (context) => const HomeScreen(),
       },
     );

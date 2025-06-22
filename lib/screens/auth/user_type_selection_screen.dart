@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../models/user.dart';
-import 'register_screen.dart';
-import 'doctor_registration_screen.dart';
+//import '../../models/user.dart';
+import 'register_patient_screen.dart';
+import 'register_doctor_screen.dart';
 
 class UserTypeSelectionScreen extends ConsumerWidget {
   const UserTypeSelectionScreen({super.key});
@@ -70,9 +70,7 @@ class UserTypeSelectionScreen extends ConsumerWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder:
-                          (_) =>
-                              const RegisterScreen(userType: UserRole.patient),
+                      builder: (_) => const RegisterPatientScreen(),
                     ),
                   );
                 },
@@ -92,7 +90,7 @@ class UserTypeSelectionScreen extends ConsumerWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const DoctorRegistrationScreen(),
+                      builder: (_) => const RegisterDoctorScreen(),
                     ),
                   );
                 },
