@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_options.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_patient_screen.dart';
-import 'screens/auth/user_type_selection_screen.dart';
+import 'screens/auth/main_selection_screen.dart';
 import 'screens/auth/register_doctor_screen.dart';
 import 'screens/home/home_screen.dart';
 //import 'models/user.dart';
@@ -75,9 +75,8 @@ class PatientBookingApp extends ConsumerWidget {
       home: const AuthWrapper(),
       routes: {
         '/login': (context) => const LoginScreen(),
-        '/register': (context) => const UserTypeSelectionScreen(),
+        '/register': (context) => const MainSelectionScreen(),
         '/register-patient': (context) => const RegisterPatientScreen(),
-        //(context) => const RegisterPatientScreen(userType: UserRole.patient),
         '/register-doctor': (context) => const RegisterDoctorScreen(),
         '/home': (context) => const HomeScreen(),
       },
@@ -102,7 +101,7 @@ class AuthWrapper extends ConsumerWidget {
       return const HomeScreen();
     }
 
-    // If not logged in, show user type selection (which leads to login/register)
-    return const UserTypeSelectionScreen();
+    // If not logged in, show main selection screen to login or register as patient or doctor)
+    return const MainSelectionScreen();
   }
 }

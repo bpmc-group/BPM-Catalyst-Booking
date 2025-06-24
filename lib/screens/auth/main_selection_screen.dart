@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'register_patient_screen.dart';
 import 'register_doctor_screen.dart';
 
-class UserTypeSelectionScreen extends ConsumerWidget {
-  const UserTypeSelectionScreen({super.key});
+class MainSelectionScreen extends ConsumerWidget {
+  const MainSelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -60,7 +60,7 @@ class UserTypeSelectionScreen extends ConsumerWidget {
 
               // Patient Card
               UserTypeCard(
-                title: "I'm a Patient",
+                title: "I'm a New Patient",
                 subtitle: "Book appointments with qualified doctors",
                 icon: Icons.person,
                 gradient: const LinearGradient(
@@ -80,7 +80,7 @@ class UserTypeSelectionScreen extends ConsumerWidget {
 
               // Doctor Card
               UserTypeCard(
-                title: "I'm a Doctor",
+                title: "I'm Joining as a Doctor",
                 subtitle: "Manage your practice and appointments",
                 icon: Icons.medical_services,
                 gradient: const LinearGradient(
@@ -104,7 +104,11 @@ class UserTypeSelectionScreen extends ConsumerWidget {
                 children: [
                   const Text(
                     'Already have an account? ',
-                    style: TextStyle(color: Color(0xFF666666)),
+                    style: TextStyle(
+                      color: Color(0xFF666666),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
@@ -115,6 +119,7 @@ class UserTypeSelectionScreen extends ConsumerWidget {
                       style: TextStyle(
                         color: Color(0xFF2196F3),
                         fontWeight: FontWeight.w600,
+                        fontSize: 18,
                       ),
                     ),
                   ),
