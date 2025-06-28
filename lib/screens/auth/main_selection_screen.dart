@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../models/user.dart';
-import 'register_screen.dart';
-import 'doctor_registration_screen.dart';
+//import '../../models/user.dart';
+import 'register_patient_screen.dart';
+import 'register_doctor_screen.dart';
 
-class UserTypeSelectionScreen extends ConsumerWidget {
-  const UserTypeSelectionScreen({Key? key}) : super(key: key);
+class MainSelectionScreen extends ConsumerWidget {
+  const MainSelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -60,7 +60,7 @@ class UserTypeSelectionScreen extends ConsumerWidget {
 
               // Patient Card
               UserTypeCard(
-                title: "I'm a Patient",
+                title: "I'm a New Patient",
                 subtitle: "Book appointments with qualified doctors",
                 icon: Icons.person,
                 gradient: const LinearGradient(
@@ -70,9 +70,7 @@ class UserTypeSelectionScreen extends ConsumerWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder:
-                          (_) =>
-                              const RegisterScreen(userType: UserRole.patient),
+                      builder: (_) => const RegisterPatientScreen(),
                     ),
                   );
                 },
@@ -82,7 +80,7 @@ class UserTypeSelectionScreen extends ConsumerWidget {
 
               // Doctor Card
               UserTypeCard(
-                title: "I'm a Doctor",
+                title: "I'm Joining as a Doctor",
                 subtitle: "Manage your practice and appointments",
                 icon: Icons.medical_services,
                 gradient: const LinearGradient(
@@ -92,7 +90,7 @@ class UserTypeSelectionScreen extends ConsumerWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const DoctorRegistrationScreen(),
+                      builder: (_) => const RegisterDoctorScreen(),
                     ),
                   );
                 },
@@ -106,7 +104,11 @@ class UserTypeSelectionScreen extends ConsumerWidget {
                 children: [
                   const Text(
                     'Already have an account? ',
-                    style: TextStyle(color: Color(0xFF666666)),
+                    style: TextStyle(
+                      color: Color(0xFF666666),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
@@ -117,6 +119,7 @@ class UserTypeSelectionScreen extends ConsumerWidget {
                       style: TextStyle(
                         color: Color(0xFF2196F3),
                         fontWeight: FontWeight.w600,
+                        fontSize: 18,
                       ),
                     ),
                   ),
@@ -138,13 +141,13 @@ class UserTypeCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const UserTypeCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.subtitle,
     required this.icon,
     required this.gradient,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +161,7 @@ class UserTypeCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -170,7 +173,7 @@ class UserTypeCard extends StatelessWidget {
               width: 60,
               height: 60,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Icon(icon, color: Colors.white, size: 30),
@@ -193,7 +196,7 @@ class UserTypeCard extends StatelessWidget {
                     subtitle,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                     ),
                   ),
                 ],

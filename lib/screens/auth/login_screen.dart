@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import '../../providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -85,7 +85,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   const SizedBox(width: 16),
                   const Text(
-                    'Patient\nBooking',
+                    'Please\nLogin',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -120,7 +120,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -229,10 +229,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           },
                           child: RichText(
                             text: const TextSpan(
-                              text: "Don't have an account? ",
+                              text: "Don't have an account?  ",
                               style: TextStyle(
                                 color: Color(0xFF6B7280),
-                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
                               ),
                               children: [
                                 TextSpan(
@@ -240,6 +241,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   style: TextStyle(
                                     color: Color(0xFF4A90A4),
                                     fontWeight: FontWeight.w600,
+                                    fontSize: 18,
                                   ),
                                 ),
                               ],

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/user.dart';
 import '../../providers/auth_provider.dart';
 
-class RegisterScreen extends ConsumerStatefulWidget {
-  final UserRole userType;
-  const RegisterScreen({super.key, required this.userType});
+class RegisterPatientScreen extends ConsumerStatefulWidget {
+  //final UserRole userType;
+  //const RegisterPatientScreen({super.key, required this.userType});
+  const RegisterPatientScreen({super.key});
 
   @override
-  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
+  ConsumerState<RegisterPatientScreen> createState() =>
+      _RegisterPatientScreenState();
 }
 
-class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+class _RegisterPatientScreenState extends ConsumerState<RegisterPatientScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -41,7 +43,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             _emailController.text.trim(),
             _passwordController.text.trim(),
             _nameController.text.trim(),
-            widget.userType,
+            UserRole.patient,
+            //widget.userType,
           );
 
       if (mounted) {
@@ -89,7 +92,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -102,7 +105,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     children: [
                       Center(
                         child: Text(
-                          'Create Account',
+                          'Create Patient Account',
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -115,7 +118,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
                       // Name Field
                       const Text(
-                        'Name',
+                        'Full Name',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
